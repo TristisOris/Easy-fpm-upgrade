@@ -15,12 +15,12 @@ read -r NEW_VERSION
 echo -n 'Old PHP version?: (e.g. 8.1) '
 read -r OLD_VERSION
 
+# empty echo here because sed can't write to empty file. for clean isntallations.
+echo "" > /opt/php-modules.txt;
 # Write modules to list
 apt list --installed | grep php$OLD_VERSION 2>/dev/null | awk -F'/' 'NR>0{print $1}' > /opt/php-modules.txt;
 # Change php-fpm version to new
 sed -i "s/$OLD_VERSION/$NEW_VERSION/" /opt/php-modules.txt;
-# empty echo here because sed can't write to empty file. for clean isntallations.
-echo "" > /opt/php-modules.txt;
 # Add basic packages
 sed -i "1i ca-certificates\napt-transport-https\nsoftware-properties-common\nlsb-release" /opt/php-modules.txt;
 sed -i "1i php$NEW_VERSION\nphp$NEW_VERSION-fpm\nphp$NEW_VERSION-cli" /opt/php-modules.txt;
